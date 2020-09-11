@@ -313,6 +313,9 @@ public class SpreadsheetView: UIView {
     public var scrollView: UIScrollView {
         return overlayView
     }
+    public var contentScroll: UIScrollView {
+        return tableView
+    }
 
     var layoutProperties = LayoutProperties()
 
@@ -515,6 +518,11 @@ public class SpreadsheetView: UIView {
     public func scrollToItem(at indexPath: IndexPath, at scrollPosition: ScrollPosition, animated: Bool) {
         let contentOffset = contentOffsetForScrollingToItem(at: indexPath, at: scrollPosition)
         tableView.setContentOffset(contentOffset, animated: animated)
+    }
+    
+    public func positionForItem(at indexPath: IndexPath) -> CGPoint  {
+        let contentOffset = contentOffsetForScrollingToItem(at: indexPath, at: .top)
+        return contentOffset
     }
 
     private func contentOffsetForScrollingToItem(at indexPath: IndexPath, at scrollPosition: ScrollPosition) -> CGPoint {
