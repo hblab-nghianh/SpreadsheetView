@@ -524,6 +524,10 @@ public class SpreadsheetView: UIView {
         let contentOffset = contentOffsetForScrollingToItem(at: indexPath, at: .top)
         return contentOffset
     }
+    
+    public func scrollToPosition(at position: CGPoint, animated: Bool) {
+        tableView.setContentOffset(position, animated: animated)
+    }
 
     private func contentOffsetForScrollingToItem(at indexPath: IndexPath, at scrollPosition: ScrollPosition) -> CGPoint {
         let (column, row) = (indexPath.column, indexPath.row)
@@ -692,8 +696,13 @@ public class SpreadsheetView: UIView {
             guard row < scrollView.rowRecords.count else {
                 return false
             }
-            let minY = scrollView.rowRecords[row] + intercellSpacing.height
-            let maxY = minY + layoutProperties.rowHeightCache[(row + scrollView.layoutAttributes.startRow) % numberOfRows]
+            var minY = scrollView.rowRecords[row] + intercellSpacing.height
+            var maxY = minY + layoutProperties.rowHeightCache[(row + scrollView.layoutAttributes.startRow) % numberOfRows]
+            let location = Location(row: row, column: column)
+            if let mergedCell = mergedCell(for: location) {
+                minY = scrollView.rowRecords[row]
+                maxY = minY + (mergedCell.size?.height ?? intercellSpacing.height)
+            }
             return y >= minY && y <= maxY
         }
 
